@@ -1,28 +1,50 @@
-import anyio
-import os
+import os 
+import sys 
 from dotenv import load_dotenv 
-from claude_agent_sdk import query, ClaudeAgentOptions
 
-load_dotenv() # to load the .env file before the main()
+load_dotenv()
 
-async def main(): 
-    # to pull key set up in terminal 
-    api_key = os.getenv("ANTHROPIC_API_KEY") # to get key from terminal -> best to keep secret key out of source code 
-        #to not leak if when push to GitHub 
+CHROMA_PATH = os.getenv("CHROMA_PATH", "./storage")
 
-    if not api_key: 
-        print("Error: ANTHROPIC_API_KEY not found.")
-        print("Fix: Run 'export ANTHROPIC_API_KEY=your_key_here' in your terminal.")
-        return 
-    
-    # the SDK  uses the key automatically --> behind scenes --> once in environment 
-    ####
-    # SDK options 
-    options = ClaudeAgentOptions(
-        setting_sources=["project", "user"],  # source targets 
-        allowed_tools=["Bash", "Read", "Glob", "Skill"] 
-    )
-# ADD REST CODE HERE LATER 
+def main(): 
+    # fresh index or load existing one 
+    if not os.path.exists(CHROMA_PATH) or not os.listdir(CHROMA_PATH): 
+        print("No existing index found. Building index from repo...")
+        from indexer.index import build_index 
+        index = build_index()
+    else: 
+        print("Loading existing index from storage...")
+        from indexer.index import load_index
+        index = load_index()
+
+    # chat engine
+    from agent.agent import build_chat_engine 
+    chat_engine = build_chat_engine(index)
+
+    print("\nRepo agent ready. Type your questions or 'quit' to exit.\n")
+
+    # chat loop 
+    while True: 
+        try: 
+            query = input("You: ").strip()
+        except (KeyboardInterrupt, EOFError): 
+            print("\nExiting.")
+            break 
+
+        if not query: 
+            continue
+        if query.lower() in ("quit", "exit"):
+            print("Exiting.")
+            break 
+
+        response = chat_engine.chat(query)
+        print(f"\nAgent: {response}\n")
+
+
 if __name__ == "__main__": 
-    anyio.run(main)
+    main()
+          
+          
+
+
 
