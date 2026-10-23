@@ -30,8 +30,23 @@ Since autonomous loops can get stuck in infinite loops, spin out of control, or 
 - **Hard Caps on Iterations:** A strict code-level limit to prevent infinite loops. 
 - **Token Budget Ceilings:** Spending limits to stop excessive API charges.
 - **Independent Verification:** Separate validation steps or tests to ensure the agent doesn't "self-grade" bad work as successful.
+
 ### *Claude Agents and Skills*
-   
+**Benefits of Skills:** (NOTE: can make custom ones as well)
+- **Specialize Claude:** Tailor capabilities for domain-specific tasks
+- **Reduce Repetition:** Create once, use automatically
+- **Compose Capabilities:** Combine Skills to build complex workflows
+
+### *Pre-built Agent Skills*
+They are available on Claude.ai, the Claude API, Claude Platform on AWS, and Microsoft Foundry. 
+**Available Skills:**
+- **PowerPoint (pptx):** Create presentations, edit slides, analyze presentation content 
+- **Excel (xlsx):** Create spreadsheets, analyze data, generate reports with charts
+- **Word (docx):** Create documents, edit content, format text
+- **PDF (pdf):** Generate formatted PDF documents and reports
+**Open-Source Skills:**
+- Anthropic also publishes open-source skills in skills repository
+
 # 3. Terminology 
 ### *Term* 
 def here 
